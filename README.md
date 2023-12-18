@@ -10,6 +10,6 @@ Create diagrams in markdown using `exec` fenced code blocks:
 
 ~~~markdown
 ```exec
-console.log("Hello, world!");
+return "Hello, world!";
 ```
 ~~~

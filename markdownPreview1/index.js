@@ -1,8 +1,18 @@
-import * as child_process from 'child_process';
+//const child_process = require('child_process');
+
+function init() {
+    renderExecBlocksInElement(document.body, (container, content) => {
+        container.innerHTML = content;
+    });
+}
+
+window.addEventListener('vscode.markdown.updateContent', init);
+
+init();
 
 async function renderExecElement(
-    container: HTMLElement,
-    writeOut: (container: HTMLElement, content: string) => void)
+    container,
+    writeOut)
 {
     const containerId = `exec-container-${crypto.randomUUID()}`;
     container.id = containerId;
@@ -10,10 +20,20 @@ async function renderExecElement(
     const source = container.textContent ?? '';
     container.innerHTML = '';
 
-    let renderResult : string[] = [ 'ok1' ];
+    let renderResult = [ 'ok4' ];
 
     try {
-        renderResult.push(typeof renderResult);
+        inspectObject(renderResult, window);
+        try {
+            require('child_process');
+        }
+        catch (e)
+        {
+            renderResult.push(e.toString());
+        }
+
+        //renderResult.push(typeof renderResult);
+        //renderResult.push(typeof child_process);
 
         //let resolve : ((value: unknown) => void) = () => { };
         //let reject : ((reason?: any) => void) = () => { };
@@ -40,13 +60,13 @@ async function renderExecElement(
 
         //const renderResult = eval(source);
 
-        inspectObject(renderResult, child_process);
+        //inspectObject(renderResult, child_process);
         //evalObject(renderResult, source);
 
         //await promise;
 
-        const result: any = renderResult.join('\n');
-        writeOut(container, result);
+        const result = renderResult.join('\n');
+        writeOut(container, '<pre>' + result + '</pre>');
         result.bindFunctions?.(container);
     } catch (error) {
         if (error instanceof Error) {
@@ -61,10 +81,9 @@ async function renderExecElement(
     }
 }
 
-export async function renderExecBlocksInElement(
-        root: HTMLElement,
-        writeOut: (container: HTMLElement, content: string) => void)
-    : Promise<void>
+async function renderExecBlocksInElement(
+        root,
+        writeOut)
 {
     // Delete existing outputs
     for (const el of document.querySelectorAll('.exec > *')) {
@@ -72,11 +91,11 @@ export async function renderExecBlocksInElement(
     }
 
     for (const container of root.getElementsByClassName('exec')) {
-        await renderExecElement(container as HTMLElement, writeOut);
+        await renderExecElement(container, writeOut);
     }
 }
 
-function inspectObject(out : string[], value : any) {
+function inspectObject(out, value) {
     out.push(`inspectObject(${typeof value})`);
     try {
         switch (typeof value) {
@@ -98,7 +117,7 @@ function inspectObject(out : string[], value : any) {
     }
 }
 
-function evalObject(out : string[], expr : string) {
+function evalObject(out, expr) {
     out.push(`evalObject(${expr})`);
     try {
         const parts = expr.split(':');

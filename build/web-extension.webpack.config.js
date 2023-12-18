@@ -29,6 +29,8 @@ module.exports = /** @type {webview.WebpackConfig} */ {
     },
     externals: {
         'vscode': 'commonjs vscode', // ignored because it doesn't exist
+        'child_process': false,
+        'fs': false
     },
     performance: {
         hints: false

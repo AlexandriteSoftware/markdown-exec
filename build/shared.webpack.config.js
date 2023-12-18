@@ -1,13 +1,16 @@
-// From https://github.com/mermaidjs/mermaid-webpack-demo/
-
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     target: 'web',
-    externals: 'fs', // in order to make mermaid work
+    externals: ['fs', 'child_process'],
     resolve: {
         extensions: ['.ts', '.js'], // support ts-files and js-files
+        fallback: {
+            "child_process": false,
+            "fs": false
+            // and also other packages that are not found
+          }
     },
     module: {
         rules: [

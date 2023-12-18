@@ -16,7 +16,7 @@
       "Other"
     ],
     "activationEvents": [],
-    "main": "./src1/index.js",
+    "main": "./dist/index.js",
     "repository": {
       "type": "git",
       "url": "https://github.com/AlexandriteSoftware/markdown-exec.git"
@@ -27,7 +27,7 @@
     "browser": "./dist/web/index.js",
     "contributes": {
       "markdown.previewScripts": [
-        "./markdownPreview1/index.js"
+        "./dist-preview/index.bundle.js"
       ],
       "markdown.markdownItPlugins": true
     },

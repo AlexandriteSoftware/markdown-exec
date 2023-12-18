@@ -2,16 +2,29 @@
 	"version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Extension1",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/src1/*.js",
+                "${workspaceFolder}/markdownPreview1/*.js"
+            ]
+        },
+        {
             "name": "Launch Extension",
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
             "args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
+                "--extensionDevelopmentPath=${workspaceFolder}"
             ],
             "outFiles": [
-				"${workspaceFolder}/dist/**/*.js"
-			],
+                "${workspaceFolder}/dist/**/*.js"
+            ],
             "preLaunchTask": "npm: compile-ext",
             "sourceMaps": true
         },
@@ -21,7 +34,7 @@
             "debugWebWorkerHost": true,
             "request": "launch",
             "args": [
-				"--extensionDevelopmentPath=${workspaceFolder}",
+                "--extensionDevelopmentPath=${workspaceFolder}",
                 "--extensionDevelopmentKind=web"
             ],
             "outFiles": [
