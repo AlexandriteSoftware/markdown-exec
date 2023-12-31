@@ -2,11 +2,11 @@
 
 [![](https://vsmarketplacebadges.dev/version/alexandritesoftware.markdown-exec.png)](https://marketplace.visualstudio.com/items?itemName=alexandritesoftware.markdown-exec)
 
-Markdown Preview Exec is a Visual Studio Code extension for enriching markdown preview by executing code blocks.
+Markdown Preview Exec is a Visual Studio Code extension that enriches markdown preview with ability to execute JavaScript (ES5) code blocks.
 
 ## Usage
 
-Create diagrams in markdown using `exec` fenced code blocks:
+Executes the `exec` fenced code blocks:
 
 ~~~markdown
 ```exec

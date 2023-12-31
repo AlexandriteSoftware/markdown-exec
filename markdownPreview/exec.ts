@@ -1,4 +1,4 @@
-import * as child_process from 'child_process';
+import Interpreter from 'js-interpreter';
 
 async function renderExecElement(
     container: HTMLElement,
@@ -10,42 +10,12 @@ async function renderExecElement(
     const source = container.textContent ?? '';
     container.innerHTML = '';
 
-    let renderResult : string[] = [ 'ok1' ];
+    let renderResult : string[] = [ ];
 
     try {
-        renderResult.push(typeof renderResult);
-
-        //let resolve : ((value: unknown) => void) = () => { };
-        //let reject : ((reason?: any) => void) = () => { };
-
-        //const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
-
-        /*
-        const ls = child_process.spawn('dir', ['.']);
-
-        ls.stdout.on('data', (data: any) => {
-          console.log(`stdout: ${data}`);
-        });
-        
-        ls.stderr.on('data', (data: any) => {
-          console.error(`stderr: ${data}`);
-        });
-        
-        ls.on('close', (code: any) => {
-          renderResult.push('ok1');
-          resolve('ok2');
-          console.log(`child process exited with code ${code}`);
-        });
-        */
-
-        //const renderResult = eval(source);
-
-        inspectObject(renderResult, child_process);
-        //evalObject(renderResult, source);
-
-        //await promise;
-
-        const result: any = renderResult.join('\n');
+        const interpreter = new Interpreter(source.trim());
+        interpreter.run();
+        const result = interpreter.value;
         writeOut(container, result);
         result.bindFunctions?.(container);
     } catch (error) {

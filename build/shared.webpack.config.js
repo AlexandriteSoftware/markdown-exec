@@ -8,7 +8,8 @@ module.exports = {
         extensions: ['.ts', '.js'], // support ts-files and js-files
         fallback: {
             "child_process": false,
-            "fs": false
+            "fs": false,
+            "vm": false
             // and also other packages that are not found
           }
     },
