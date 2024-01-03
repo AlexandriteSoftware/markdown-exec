@@ -1,8 +1,9 @@
 // @ts-check
-const path = require('path');
-const webpack = require('webpack');
 
-module.exports = /** @type {webview.WebpackConfig} */ {
+const path = require('path');
+
+/** @type {import('webpack').Configuration} */
+const config = {
     context: path.dirname(__dirname),
     mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
     target: 'webworker', // extensions run in a webworker context
@@ -28,12 +29,12 @@ module.exports = /** @type {webview.WebpackConfig} */ {
         }]
     },
     externals: {
-        'vscode': 'commonjs vscode', // ignored because it doesn't exist
-        'child_process': false,
-        'fs': false
+        'vscode': 'commonjs vscode' // ignored because it doesn't exist
     },
     performance: {
         hints: false
     },
     devtool: 'nosources-source-map' // create a source map that points to the original source file
 };
+
+module.exports = config;

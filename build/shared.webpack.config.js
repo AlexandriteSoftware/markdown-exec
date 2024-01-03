@@ -1,17 +1,15 @@
+// @ts-check
+
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
+/** @type {import('webpack').Configuration} */
+const config = {
     target: 'web',
-    externals: ['fs', 'child_process'],
+    externals: [ ],
     resolve: {
-        extensions: ['.ts', '.js'], // support ts-files and js-files
-        fallback: {
-            "child_process": false,
-            "fs": false,
-            "vm": false
-            // and also other packages that are not found
-          }
+        extensions: ['.ts', '.js'],
+        fallback: { }
     },
     module: {
         rules: [
@@ -53,3 +51,5 @@ module.exports = {
         minimizer: [new TerserPlugin()],
     },
 };
+
+module.exports = config;

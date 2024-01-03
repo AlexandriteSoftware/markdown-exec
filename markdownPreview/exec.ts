@@ -1,6 +1,7 @@
-import Interpreter from 'js-interpreter';
+var JSI = require('./lib/interpreter');
 
 async function renderExecElement(
+    config : { timeout: number },
     container: HTMLElement,
     writeOut: (container: HTMLElement, content: string) => void)
 {
@@ -13,70 +14,83 @@ async function renderExecElement(
     let renderResult : string[] = [ ];
 
     try {
-        const interpreter = new Interpreter(source.trim());
-        interpreter.run();
-        const result = interpreter.value;
+        await evaluate(source, config.timeout, value => renderResult.push(value));
+        var result = renderResult.join('\n') as any;
         writeOut(container, result);
         result.bindFunctions?.(container);
     } catch (error) {
-        if (error instanceof Error) {
-            const errorMessageNode = document.createElement('pre');
-            errorMessageNode.className = 'exec-error';
-            errorMessageNode.innerText = error.message;
-            renderResult.push(errorMessageNode.outerHTML);
-            writeOut(container, renderResult.join('\n'));
-        }
-
-        throw error;
+        const errorMessageNode = document.createElement('pre');
+        errorMessageNode.className = 'exec-error';
+        errorMessageNode.innerText = '' + error;
+        renderResult.push(errorMessageNode.outerHTML);
+        writeOut(container, renderResult.join('\n'));
     }
 }
 
+async function evaluate(
+        source : string,
+        timeout : number,
+        write: (content: string) => void)
+    : Promise<any>
+{
+    // trim trailing newline (semicolon insertion makes last line an empty statement)
+    const code = source.trimEnd();
+
+    const interpreter = new JSI.Interpreter(code);
+
+    // if no timeout, just run the interpreter to completion
+    // and return the result
+    if (timeout === 0 || typeof timeout === 'undefined') {
+        interpreter.run();
+        write(interpreter.value);
+        return Promise.resolve(null);
+    }
+
+    // otherwise, run the interpreter in steps until it completes
+    // but no longer than the timeout
+    let resolve : (value: any) => void;
+    let reject : (reason?: any) => void;
+    const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
+
+    const startTime = Date.now();
+    const timeoutMs = timeout * 1000;
+
+    function nextStep() {
+        if (Date.now() - startTime > timeoutMs) {
+            reject(new Error(`Timeout after ${timeout}s`));
+            return;
+        }
+
+        try {
+            const result = interpreter.step();
+            if (result) {
+                window.setTimeout(nextStep, 0);
+                return;
+            }
+        } catch (error) {
+            reject(error);
+            return;
+        }
+
+        write(interpreter.value);
+        resolve(null);
+    }
+
+    nextStep();
+
+    return promise;
+}
+
 export async function renderExecBlocksInElement(
+        config : { timeout: number },
         root: HTMLElement,
         writeOut: (container: HTMLElement, content: string) => void)
     : Promise<void>
 {
     // Delete existing outputs
-    for (const el of document.querySelectorAll('.exec > *')) {
-        el.remove();
-    }
+    for (const element of document.querySelectorAll('.exec > *'))
+        element.remove();
 
-    for (const container of root.getElementsByClassName('exec')) {
-        await renderExecElement(container as HTMLElement, writeOut);
-    }
-}
-
-function inspectObject(out : string[], value : any) {
-    out.push(`inspectObject(${typeof value})`);
-    try {
-        switch (typeof value) {
-            case 'function':
-                out.push(value.toString());
-                break;
-            case 'object':
-                for (const key in value) {
-                    out.push(`${key}: ...`);
-                }
-                break;
-            default:
-                out.push(value);
-                break;
-        }
-    }
-    catch (error) {
-        out.push('' + error);
-    }
-}
-
-function evalObject(out : string[], expr : string) {
-    out.push(`evalObject(${expr})`);
-    try {
-        const parts = expr.split(':');
-        const imported = require(parts[0]);
-        const value = imported[parts[1]];
-        inspectObject(out, value);
-    }
-    catch (error) {
-        out.push('' + error);
-    }
+    for (const element of root.getElementsByClassName('exec'))
+        await renderExecElement(config, element as HTMLElement, writeOut);
 }

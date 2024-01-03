@@ -1,5 +1,7 @@
 # NOTES
 
+## eval
+
 eval is not allowed in the markdown preview in Strict mode.
 
 Even when with a lesser security policy, the preview script cannot access node's APIs such as require, fs, vm, etc.
@@ -17,3 +19,9 @@ This extension can expose HTTP or HTTPS endpoint, and the preview script can sen
 The Live Preview extension can be used as an example:
 
 - <https://github.com/microsoft/vscode-livepreview>
+
+## Extension
+
+The structure of this extension follows <https://github.com/mjbvz/vscode-markdown-mermaid>.
+
+The notebook support is removed, because the notebook supports code blocks naturally.
