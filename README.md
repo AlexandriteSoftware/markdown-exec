@@ -24,6 +24,11 @@ Other examples:
 
 ![examples](docs/examples.png)
 
+## Configuration
+
+- `timeout` - timeout (in seconds) for the script to complete
+- `include` - list of glob patters to include scripts from, relative to the first workspace folder
+
 ## Limitations
 
 The default strict security profile of the markdown preview disables the `eval` functions. Therefore, the code is evaluated through [JS interpreter](<https://github.com/NeilFraser/JS-Interpreter>). This means that:
@@ -43,7 +48,6 @@ Some of the limitations can be overcome:
 
 ## TODO
 
-- [ ] Add configuration for include scripts from folders
-- [ ] Provide access to some of the browser APIs (e.g. `console`, `document`, `window`, etc.)
-- [ ] Make scripts from the workspace available to the sandbox
+- [x] Add configuration for include scripts from folders
 - [x] Workaround for the infinite loops (i.e. limit execution time for 3 seconds)
+- [ ] Provide access to some of the browser APIs (e.g. `console`, `document`, `window`, etc.)

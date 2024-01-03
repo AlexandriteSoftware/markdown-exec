@@ -1,17 +1,20 @@
 var JSI = require('./lib/interpreter');
 
 async function renderExecElement(
-    config : { timeout: number },
+    config : { timeout: number, script: string, error: string },
     container: HTMLElement,
     writeOut: (container: HTMLElement, content: string) => void)
 {
     const containerId = `exec-container-${crypto.randomUUID()}`;
     container.id = containerId;
 
-    const source = container.textContent ?? '';
+    const source = config.script + ';\n' + (container.textContent ?? '');
     container.innerHTML = '';
 
     let renderResult : string[] = [ ];
+
+    if (config.error != '')
+        renderResult.push(config.error);
 
     try {
         await evaluate(source, config.timeout, value => renderResult.push(value));
@@ -82,7 +85,7 @@ async function evaluate(
 }
 
 export async function renderExecBlocksInElement(
-        config : { timeout: number },
+        config : { timeout: number, script: string, error: string },
         root: HTMLElement,
         writeOut: (container: HTMLElement, content: string) => void)
     : Promise<void>

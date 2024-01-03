@@ -18,6 +18,13 @@ const config = {
     resolve: {
         mainFields: ['browser', 'module', 'main'], // look for `browser` entry point in imported node modules
         extensions: ['.ts', '.js'], // support ts-files and js-files
+        fallback: {
+            "path": false,
+            "fs": false,
+            "url": false,
+            "string_decoder": false,
+            "stream": false
+        }
     },
     module: {
         rules: [{
