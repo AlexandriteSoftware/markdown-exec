@@ -1,4 +1,5 @@
 var JSI = require('./lib/interpreter');
+var babel = require('@babel/standalone');
 
 async function renderExecElement(
     config : { timeout: number, script: string, error: string },
@@ -34,7 +35,9 @@ function evaluate(
     // trim trailing newline (semicolon insertion makes last line an empty statement)
     const code = source.trimEnd();
 
-    const interpreter = new JSI.Interpreter(code);
+    const es5Code = babel.transform(code, { presets : [ 'env' ] }).code
+
+    const interpreter = new JSI.Interpreter(es5Code);
 
     // use native support for regular expressions
     interpreter.REGEXP_MODE = 1;

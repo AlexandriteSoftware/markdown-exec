@@ -52,6 +52,8 @@
         "markdown-it-container": "^3.0.0"
     },
     "devDependencies": {
+        "@babel/standalone": "^7.23.7",
+        "@types/babel__standalone": "^7.1.7",
         "@types/glob": "^8.1.0",
         "@types/markdown-it": "^12.2.3",
         "@types/vscode": "^1.72.0",
