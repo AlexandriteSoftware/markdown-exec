@@ -1,13 +1,29 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "moduleResolution": "node",
-        "target": "es2020",
-        "lib": [
-            "es2020"
-        ]
-    },
-    "exclude": [
-        "node_modules"
-    ]
+  "compilerOptions": {
+    "moduleResolution": "node",
+
+    // Define the library files to be included in the compilation.
+    "lib": [ "ES2020" ],
+
+    // Raise error on expressions and declarations with an implied 'any' type.
+    "noImplicitAny": true,
+
+    // Report error when not all code paths in function return a value.
+    "noImplicitReturns": true,
+
+    // Raise error on 'this' expressions with an implied 'any' type.
+    "noImplicitThis": true,
+
+    // Report errors on unused locals.
+    "noUnusedLocals": true,
+    
+    // Enables all strict type checking options.
+    "strict": true,
+
+    // Define the output language level.
+    "target": "ES2020"
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

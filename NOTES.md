@@ -2,7 +2,7 @@
 
 ## eval
 
-eval is not allowed in the markdown preview in Strict mode.
+`eval` is disabled in the Strict mode.
 
 Even when with a lesser security policy, the preview script cannot access node's APIs such as require, fs, vm, etc.
 

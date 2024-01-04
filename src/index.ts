@@ -54,8 +54,6 @@ function addConfigurationInjector
 
     const render = md.renderer.render;
     md.renderer.render = function () {
-        logger.info(`addConfigurationInjector.renderer: start`);
-
         const extensionConfiguration = vscode.workspace.getConfiguration(EXTENSION_ID);
 
         const timeoutValue = extensionConfiguration.get('timeout') as any;
@@ -80,12 +78,48 @@ function addConfigurationInjector
     return md;
 }
 
-function includeScripts(patterns: string[]) {
+/**
+ * Read all files that match the given glob patterns, wrap them into
+ * a require-like function and return the resulting script.
+ * 
+ * The scripts only loaded from the first workspace folder.
+ */
+function includeScripts
+    (patterns: string[])
+{
     const wsRoot = vscode.workspace.workspaceFolders?.[0];
     const rootFolder = wsRoot?.uri.fsPath ?? '.';
     const scripts = globSync(patterns, { cwd: rootFolder });
-    return scripts.map(item => {
+
+    // key points:
+    //
+    // - script will be executed in the interpreter, so it should be ES5
+    // - `require` accepts path from the worspace root folder
+
+    const script = `var require = function (name) {
+        var path = name.replace(/\\\\/g, '/').replace(/\\.js$/, '');
+        var entry = require.__scripts[path];
+        if (!entry) {
+            throw new Error('Cannot find module ' + path);
+        }
+        if (!entry.loaded) {
+            entry.loaded = true;
+            entry.code(entry.module = { exports: {} });
+        }
+        return entry.module.exports;
+    };
+    require.__scripts = {};`;
+
+    return script + '\n' + scripts.map(item => {
         const itemPath = path.join(rootFolder, item);
-        return fs.readFileSync(itemPath, 'utf8');
+        const content = fs.readFileSync(itemPath, 'utf8');
+        const itemPathStr = item.replace(/\\/g, '/').replace(/\.js$/, '');
+
+        return `require.__scripts[\'/${itemPathStr}\'] = {
+            code : function (module) {
+                var exports = module.exports;
+                ${content}
+            }
+        };`;
     }).join('\n');
 }

@@ -6,8 +6,5 @@
             "DOM",
             "DOM.Iterable"
         ]
-    },
-    "exclude": [
-        "node_modules"
-    ]
+    }
 }

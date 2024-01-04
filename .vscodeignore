@@ -1,10 +1,14 @@
+# .vscodeignore is meant for files that
+# should be ignored when the extension
+# is installed
+
+.gitignore
 .vscode/**
 .vscode-test/**
-out/test/**
 build/
 markdownPreview/
 notebook/
+out/test/**
 src/
-**/*.map
-.gitignore
 tsconfig*.json
+**/*.map

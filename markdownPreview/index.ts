@@ -6,13 +6,11 @@
 import { renderExecBlocksInElement } from './exec';
 
 let loggerContainer : HTMLDivElement | null = null;
-const logger = {
-    info : (message : string) => {
-        loggerContainer?.appendChild(document.createElement('pre'))
-            .appendChild(document.createTextNode(message));
-    }
+const logger = { info : (message : string) => {} };
+logger.info = (message : string) => {
+    loggerContainer?.appendChild(document.createElement('pre'))
+        .appendChild(document.createTextNode(message));
 };
-
 
 function init() {
     if (loggerContainer === null) {

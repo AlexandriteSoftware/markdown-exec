@@ -25,7 +25,7 @@ async function renderExecElement(
     }
 }
 
-async function evaluate(
+function evaluate(
         source : string,
         timeout : number,
         write: (content: string) => void)
@@ -35,6 +35,8 @@ async function evaluate(
     const code = source.trimEnd();
 
     const interpreter = new JSI.Interpreter(code);
+
+    // use native support for regular expressions
     interpreter.REGEXP_MODE = 1;
 
     // if no timeout, just run the interpreter to completion
@@ -47,44 +49,33 @@ async function evaluate(
 
     // otherwise, run the interpreter in steps until it completes
     // but no longer than the timeout
-    let resolve : (value: any) => void;
-    let reject : (reason?: any) => void;
-    const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
 
     const startTime = (Date.now() / 1000) | 0;
     let currentTime = (startTime / 1000) | 0;
 
-    function nextStep() {
+    while (true) {
         const now = (Date.now() / 1000) | 0;
 
         if (currentTime != now) {
             currentTime = now;
-            write('working...');
+            // next second tick
+            // write('working...');
         }
 
         if (currentTime - startTime > timeout) {
-            reject(new Error(`Timeout after ${timeout}s`));
-            return;
+            return Promise.reject(new Error(`Timeout after ${timeout}s`));
         }
 
         try {
             const result = interpreter.step();
-            if (result) {
-                window.setTimeout(nextStep, 0);
-                return;
+            if (!result) {
+                write(interpreter.value);
+                return Promise.resolve(null);
             }
         } catch (error) {
-            reject(error);
-            return;
+            return Promise.reject(error);
         }
-
-        write(interpreter.value);
-        resolve(null);
     }
-
-    nextStep();
-
-    return promise;
 }
 
 export async function renderExecBlocksInElement(

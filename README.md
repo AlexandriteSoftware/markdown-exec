@@ -20,9 +20,17 @@ The result is rendered in the preview:
 
 > Hello, **world**!
 
-Other examples:
+Screenshot:
 
 ![examples](docs/examples.png)
+
+Other examples:
+
+~~~markdown
+```exec
+require('/scripts/hello').print();
+```
+~~~
 
 ## Configuration
 
@@ -38,6 +46,7 @@ The default strict security profile of the markdown preview disables the `eval` 
 - No access to the Node.js APIs
 - Performance is slow (in comparison to the normal JS code execution)
 - The script result should be searialisable to JSON (no object pasing from the sandbox)
+- `require` is custom, supports only absolute paths from the worspace root folder
 
 By selecting a different security profile, the code can be executed using eval, which enables modern JavaScript with access to the DOM. However, this approach is not recommended due to the associated security risks. Additionally, the sandboxed nature of the preview means that Node.js APIs, typically accessible to VS Code extensions, will remain unavailable.
 
