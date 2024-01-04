@@ -11,22 +11,17 @@ async function renderExecElement(
     const source = config.script + ';\n' + (container.textContent ?? '');
     container.innerHTML = '';
 
-    let renderResult : string[] = [ ];
-
     if (config.error != '')
-        renderResult.push(config.error);
+        writeOut(container, config.error);
 
     try {
-        await evaluate(source, config.timeout, value => renderResult.push(value));
-        var result = renderResult.join('\n') as any;
-        writeOut(container, result);
-        result.bindFunctions?.(container);
+        await evaluate(source, config.timeout, value => writeOut(container, value));
+        //result.bindFunctions?.(container);
     } catch (error) {
         const errorMessageNode = document.createElement('pre');
         errorMessageNode.className = 'exec-error';
         errorMessageNode.innerText = '' + error;
-        renderResult.push(errorMessageNode.outerHTML);
-        writeOut(container, renderResult.join('\n'));
+        writeOut(container, errorMessageNode.outerHTML);
     }
 }
 
@@ -40,6 +35,7 @@ async function evaluate(
     const code = source.trimEnd();
 
     const interpreter = new JSI.Interpreter(code);
+    interpreter.REGEXP_MODE = 1;
 
     // if no timeout, just run the interpreter to completion
     // and return the result
@@ -55,11 +51,18 @@ async function evaluate(
     let reject : (reason?: any) => void;
     const promise = new Promise((res, rej) => { resolve = res; reject = rej; });
 
-    const startTime = Date.now();
-    const timeoutMs = timeout * 1000;
+    const startTime = (Date.now() / 1000) | 0;
+    let currentTime = (startTime / 1000) | 0;
 
     function nextStep() {
-        if (Date.now() - startTime > timeoutMs) {
+        const now = (Date.now() / 1000) | 0;
+
+        if (currentTime != now) {
+            currentTime = now;
+            write('working...');
+        }
+
+        if (currentTime - startTime > timeout) {
             reject(new Error(`Timeout after ${timeout}s`));
             return;
         }
