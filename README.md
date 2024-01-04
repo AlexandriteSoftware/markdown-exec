@@ -4,7 +4,7 @@
 
 This extension is EXPERIMENTAL.
 
-Markdown Preview Exec is a Visual Studio Code extension that enriches markdown preview with ability to execute JavaScript (ES5) code blocks.
+Markdown Preview Exec is a Visual Studio Code extension that enriches markdown preview with ability to execute JavaScript code blocks.
 
 ## Usage
 
