@@ -52,5 +52,6 @@ By selecting a different security profile, the code can be executed using eval, 
 
 ## TODO
 
+- [ ] Add modern JS polyfill
 - [ ] Provide access to some of the browser APIs (e.g. `console`, `document`, `window`, etc.)
 - [ ] Perfomance optimisations

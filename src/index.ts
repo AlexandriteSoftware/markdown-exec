@@ -63,7 +63,7 @@ function addConfigurationInjector
         logger.info(`addConfigurationInjector.renderer: timeout = ${timeout}, include = ${patterns.join(', ')}`);
 
         const script = includeScripts(patterns);
-        const encodedScript = Buffer.from(script).toString('base64')
+        const encodedScript = Buffer.from(script).toString('base64');
 
         // prepends the rendering output with the `span` element that contains
         // configuration data for the `exec` plugin and collected scripts
