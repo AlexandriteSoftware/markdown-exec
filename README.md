@@ -8,7 +8,7 @@ Markdown Preview Exec is a Visual Studio Code extension that enriches markdown p
 
 ## Usage
 
-Executes the `exec` fenced code blocks:
+Mark the code block with the `exec` language identifier:
 
 ~~~markdown
 ```exec
@@ -24,7 +24,7 @@ Screenshot:
 
 ![examples](docs/examples.png)
 
-Other examples:
+If the file `/scripts/hello.js` is included by `markdown-exec.include`, it can be called as follows:
 
 ~~~markdown
 ```exec
@@ -36,6 +36,15 @@ require('/scripts/hello').print();
 
 - `timeout` - timeout (in seconds) for the script to complete
 - `include` - list of glob patters to include scripts from, relative to the first workspace folder
+
+Example:
+
+```json
+  "markdown-exec.timeout": 0,
+  "markdown-exec.include": [
+    "scripts/kb/**/*.js"    
+  ]
+```
 
 ## Limitations
 
@@ -52,6 +61,6 @@ By selecting a different security profile, the code can be executed using eval, 
 
 ## TODO
 
-- [ ] Add modern JS polyfill
+- [ ] Add JS polyfill
 - [ ] Provide access to some of the browser APIs (e.g. `console`, `document`, `window`, etc.)
 - [ ] Perfomance optimisations
